@@ -11,7 +11,7 @@
 
 namespace App\Controller;
 
-
+use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,9 @@ class HomeController extends AbstractController {
      * @return Response
      * @Route ("/", name="home")
      */
-    public function index(): Response {
-        return $this->render('app/home.html.twig');
+    public function index(PostRepository $postRepository): Response {
+        return $this->render('app/home.html.twig', [
+            'posts' => $postRepository->findAll(),
+        ]);
     }
 }

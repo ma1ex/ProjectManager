@@ -2,6 +2,15 @@
 
 {% block title %}Posts{% endblock %}
 
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Posts</li>
+        </ol>
+    </nav>
+{% endblock %}
+
 {% block body %}
     <h1>Posts</h1>
 
