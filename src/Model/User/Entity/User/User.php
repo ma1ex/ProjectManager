@@ -8,14 +8,17 @@
  * Comment:
  */
 
+declare(strict_types = 1);
 
 namespace App\Model\User\Entity\User;
 
-
 class User {
 
+    private const STATUS_WAIT = 'wait';
+    private const STATUS_ACTIVE = 'active';
+
     /**
-     * @var string
+     * @var Id
      */
     private $id;
 
@@ -25,7 +28,7 @@ class User {
     private $date;
 
     /**
-     * @var string
+     * @var Email
      */
     private $email;
 
@@ -34,17 +37,49 @@ class User {
      */
     private $passwordHash;
 
-    public function __construct(string $id, \DateTimeImmutable $date, string $email, string $hash) {
+    /**
+     * @var string
+     */
+    private $confirmToken;
+
+    /**
+     * @var string
+     */
+    private $status;
+
+    public function __construct(
+        Id $id,
+        \DateTimeImmutable $date,
+        Email $email,
+        string $hash,
+        string $token
+    ) {
         $this->id = $id;
         $this->date = $date;
         $this->email = $email;
         $this->passwordHash = $hash;
+        $this->confirmToken = $token;
+        $this->status = self::STATUS_WAIT;
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getId(): string {
+    public function isWait(): bool {
+        return $this->status === self::STATUS_WAIT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * @return Id
+     */
+    public function getId(): Id {
         return $this->id;
     }
 
@@ -56,9 +91,9 @@ class User {
     }
 
     /**
-     * @return string
+     * @return Email
      */
-    public function getEmail(): string {
+    public function getEmail(): Email {
         return $this->email;
     }
 
@@ -69,4 +104,10 @@ class User {
         return $this->passwordHash;
     }
 
+    /**
+     * @return string
+     */
+    public function getConfirmToken(): string {
+        return $this->confirmToken;
+    }
 }
