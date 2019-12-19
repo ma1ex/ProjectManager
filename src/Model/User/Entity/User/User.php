@@ -14,7 +14,14 @@ namespace App\Model\User\Entity\User;
 
 class User {
 
+    /**
+     * User activation wait
+     */
     private const STATUS_WAIT = 'wait';
+
+    /**
+     * User is activated
+     */
     private const STATUS_ACTIVE = 'active';
 
     /**
@@ -43,6 +50,8 @@ class User {
     private $confirmToken;
 
     /**
+     * Wait or Active
+     *
      * @var string
      */
     private $status;
@@ -60,6 +69,18 @@ class User {
         $this->passwordHash = $hash;
         $this->confirmToken = $token;
         $this->status = self::STATUS_WAIT;
+    }
+
+    /**
+     * If user was registered
+     */
+    public function confirmSignUp(): void {
+        if (!$this->isWait()) {
+            throw new \DomainException('User is already confirmed!');
+        }
+
+        $this->status = self::STATUS_ACTIVE;
+        $this->confirmToken = null;
     }
 
     /**

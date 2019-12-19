@@ -62,6 +62,10 @@ class Handler {
         $this->sender = $sender;
     }
 
+    /**
+     * @param Command $command
+     * @throws \Exception
+     */
     public function handle(Command $command): void {
         //
         $email = new Email($command->email);
@@ -80,10 +84,11 @@ class Handler {
             $token = $this->tokenizer->generate()
         );
 
+        // Set creatred User in container (repository)
         $this->users->add($user);
-
+        // Send email with activation token
         $this->sender->send($email, $token);
-
+        // Save in DB
         $this->flusher->flush();
     }
 }
