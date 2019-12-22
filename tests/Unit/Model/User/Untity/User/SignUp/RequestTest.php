@@ -22,7 +22,10 @@ class RequestTest extends TestCase {
     public function testSuccess(): void {
         $user = new User(
             $id = Id::next(),
-            $date = new \DateTimeImmutable(),
+            $date = new \DateTimeImmutable()
+        );
+
+        $user->signUpByEmail(
             $email = new Email('test@pm.local'),
             $hash = 'hash',
             $token = 'token'
