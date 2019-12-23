@@ -76,7 +76,7 @@ class Handler {
         }
 
         // Создание нового пользователя
-        $user = new User(
+        $user = User::signUpByEmail(
             Id::next(),
             new \DateTimeImmutable(),
             $email,

@@ -69,31 +69,57 @@ class User {
     private $status;
 
     /**
+     * @var Role
+     */
+    private $role;
+
+    /**
      * @var Network[]|ArrayCollection
      */
     private $networks;
 
-    public function __construct(Id $id, \DateTimeImmutable $date) {
+    private function __construct(Id $id, \DateTimeImmutable $date) {
         $this->id = $id;
         $this->date = $date;
-        $this->status = self::STATUS_NEW;
+        $this->role = Role::user();
         $this->networks = new ArrayCollection();
     }
 
     /**
+     * @param Id $id
+     * @param \DateTimeImmutable $date
      * @param Email $email
      * @param string $hash
      * @param string $token
+     * @return User
      */
-    public function signUpByEmail(Email $email, string $hash, string $token): void {
-        if (!$this->isNew()) {
-            throw new \DomainException('User is already signed up!');
-        }
+    public static function signUpByEmail(Id $id, \DateTimeImmutable $date, Email $email, string $hash, string $token): self {
 
-        $this->email = $email;
-        $this->passwordHash = $hash;
-        $this->confirmToken = $token;
-        $this->status = self::STATUS_WAIT;
+        $user = new self($id, $date);
+
+        $user->email = $email;
+        $user->passwordHash = $hash;
+        $user->confirmToken = $token;
+        $user->status = self::STATUS_WAIT;
+
+        return $user;
+    }
+
+    /**
+     * @param Id $id
+     * @param \DateTimeImmutable $date
+     * @param string $network
+     * @param string $identity
+     * @return User
+     */
+    public static function signUpByNetwork(Id $id, \DateTimeImmutable $date, string $network, string $identity): self {
+
+        $user = new self($id, $date);
+
+        $user->attachNetwork($network, $identity);
+        $user->status = self::STATUS_ACTIVE;
+
+        return $user;
     }
 
     /**
@@ -106,19 +132,6 @@ class User {
 
         $this->status = self::STATUS_ACTIVE;
         $this->confirmToken = null;
-    }
-
-    /**
-     * @param string $network
-     * @param string $identity
-     */
-    public function signUpByNetwork(string $network, string $identity): void {
-        if (!$this->isNew()) {
-            throw new \DomainException('User is already signed up!');
-        }
-
-        $this->attachNetwork($network, $identity);
-        $this->status = self::STATUS_ACTIVE;
     }
 
     /**
@@ -165,6 +178,17 @@ class User {
         }
 
         $this->passwordHash = $hash;
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function changeRole(Role $role): void {
+        if ($this->role->isEqual($role)) {
+            throw new \DomainException('Role is already same!');
+        }
+
+        $this->role = $role;
     }
 
     /**
