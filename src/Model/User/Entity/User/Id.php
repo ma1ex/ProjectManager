@@ -41,4 +41,13 @@ class Id {
     public function getValue(): string {
         return $this->value;
     }
+    
+    /**
+     * Приведение данного объекта к строке для корректного сохранения в БД
+     *
+     * @return string
+     */
+    public function __toString(): string {
+        return $this->getValue();
+    }
 }
