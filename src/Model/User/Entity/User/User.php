@@ -17,8 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user_users")
  * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="user_users", uniqueConstraints={
+ *            @ORM\UniqueConstraint(columns={"email"}),
+ *            @ORM\UniqueConstraint(columns={"reset_token_token"})
+ *     })
  */
 class User {
 
@@ -90,6 +93,7 @@ class User {
 
     /**
      * @var Network[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="Network", mappedBy="user", orphanRemoval=true, cascade={"persist"})
      */
     private $networks;
 
@@ -277,6 +281,7 @@ class User {
     }
     
     /**
+     * Проверка вложенных объектов на пустоту.
      * Если объекты Id, Email, Role из БД извлекаются пустыми, то обнуляем их.
      * This method for only use ORM
      *
